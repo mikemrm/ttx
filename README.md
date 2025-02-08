@@ -10,6 +10,8 @@ A simple bash ps1 prompt script is available inspired by [jonmosco/kube-ps1].
 
 ## Installation
 
+### ttx
+
 To install **ttx** simply run:
 
 ```bash
@@ -19,12 +21,17 @@ $ curl https://raw.githubusercontent.com/mikemrm/ttx/refs/heads/main/ttx -o /usr
 > [!TIP]
 > Ensure [talosctl], [fzf], and [yq] are installed.
 
+### talos-ps1
+
 To install **talos-ps1** download [talos-ps1.sh] and add the following to your `$HOME/.bashrc`:
 
 ```bash
 source /path/to/talos-ps1.sh
 PS1='[\u@\h \W] $(talos_ps1)\$ '
 ```
+
+> [!TIP]
+> Ensure [yq] is installed.
 
 Enable and disable the prompt with `taloson` and `talosoff`.
 
@@ -44,9 +51,6 @@ NODE        NAMESPACE   TYPE       ID         VERSION   NODENAME
 [user@host ~] (⸩⸨|dev-cluster)$ talosoff
 [user@host ~] $
 ```
-
-> [!TIP]
-> Ensure [yq] is installed.
 
 [talosctl]: https://github.com/siderolabs/talos/releases/latest
 [fzf]: https://github.com/junegunn/fzf
