@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -eu
+
+if [ ! -x "$(which yq 2>/dev/null)" ]; then
+    echo "please install: yq (https://github.com/mikefarah/yq)" >&2
+
+    exit 1
+fi
+
+if [ ! -x "$(which fzf 2>/dev/null)" ]; then
+    echo "please install: fzf (https://github.com/junegunn/fzf)" >&2
+
+    exit 1
+fi
+
+talosconfig="${TALOSCONFIG:-}"
+
+if [ -z "$talosconfig" ]; then
+    talosconfig="$HOME/.talos/config"
+
+    if [ ! -e "$talosconfig" ]; then
+        talosconfig="/var/run/secrets/talos.dev/config"
+    fi
+fi
+
+if [ ! -e "$talosconfig" ]; then
+    echo "talos config not found. Define 'TALOSCONFIG' env variable or create a config in \$HOME/.talos/conf or /var/run/secrets/talos.dev/config" >&2
+
+    exit 1
+fi
+
+current="$(yq -r '.context' "$talosconfig")"
+selected=$( (yq -r '.context as $current | .contexts | with_entries(select(.key != $current)) | keys | sort + [$current] | .[]' "$talosconfig") |
+    fzf -0 -1 --tac -q "${1:-""}" --prompt "$current> ")
+
+if [ -n "$selected" ]; then
+    talosctl config context "${selected}"
+fi
